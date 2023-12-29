@@ -136,7 +136,7 @@ def annotate_envelope_and_inscription(hex_string):
 ####################################################################################################################################
         
 st.title("Where Is My Taproot Wizard?")
-st.subheader("An educational tool to help you find your wizard on the Bitcoin blockchain")
+st.subheader("An educational tool to help you understand where and how wizards are stored on the Bitcoin blockchain.")
 st.caption("By [You Are El](https://twitter.com/you_are_el)")
 st.write("Inscriptions inscribe sats with arbitrary content, creating bitcoin-native digital artifacts, more commonly known as NFTs (Source: [Ordinal Theory Handbook](https://docs.ordinals.com/inscriptions.html)). \
          One of the most well known collections of inscriptions on the Bitcoin blockchain is the [Taproot Wizards](https://taprootwizards.com/collection) collection which we will take a closer look at today. \
@@ -149,18 +149,26 @@ st.write("For the sake of simplicity, this demo connects to publicly available A
 st.write("This demo is set up to work with the [Taproot Wizards](https://taprootwizards.com/collection) collection. However, it does support almost any other inscriptions as well, except for recursive inscriptions. If you want to explore other inscriptions, \
          you can paste a transaction ID into the text field further down on this website. You can explore other inscriptions on ordinals explorers like [ord.io](https://www.ord.io).")
 
+st.write("Due to the large amount of data displayed on this website, it is best viewed on a desktop computer.")
+
+st.divider()  # Draws a horizontal rule
+
 st.header("Encoded Forever on Bitcoin") 
 st.write("You will find posts like this all over Odrinals X communities and it is one of [Udi Wertheimer's](https://twitter.com/udiWertheimer) favorite things to point out. Wizards (and inscriptions in general) are forever encoded on Bitcoin. \
          But what does that mean exactly? Does that mean that all these inscriptions are literally stored on Bitcoin like files on a computer? Yes, kind of. This web app will teach you where and how they are stored exactly. \
         Let's take a look at the post below.")
 
 t = Tweet("https://twitter.com/udiWertheimer/status/1739900877803049393").component()
+st.caption("This is a tweet by Udi Wertheimer. You can click on the tweet to open it on Twitter. If the tweet does not display correctly, try a different browser. There is a known problem with mobile Firefox.")
+
 st.write("So apparently this wizard is encoded forever on bitcoin. Sidenote: This specific wizard belongs to [Billy Markus](https://billym2k.net/) the creator of Dogecoin. Let's see if we can actually find it \
          on the blockchain.")
 
 ####################################################################################################################################
 ### Oh Wizard Where Art Thou?                                                                                                    ###
 ####################################################################################################################################
+
+st.divider()  # Draws a horizontal rule
 
 st.header("Oh Wizard Where Art Thou?")
 st.write("Ok so Udi is giving us some clues here. The wizard is encoded forever on bitcoin block 783077. Let's have a look at that block below and see if we can spot the wizard.")
@@ -183,6 +191,8 @@ st.markdown("Notice how the ID Udi provided in the post, is actually the Inscrip
 ####################################################################################################################################
 ### Interrogating the Witness                                                                                                    ###
 ####################################################################################################################################
+
+st.divider()  # Draws a horizontal rule
 
 st.header("Interrogating the Witness")
 st.write("We are closing in on the wizard. However, now comes the complicated part. Let's reiterate for a second. If the wizard is actually stored on the blockchain, in a specific block, within a specific transaction, \
@@ -253,6 +263,12 @@ st.markdown("Ok, so what we are technically doing now is looking for the envelop
          And furthermore we can identify the image data to reconstruct our wizard. In order to identify the envelope, we need to know how the opcodes look in hexadecimal format. We can find this information \
          in the following [Bitcoin Wiki](https://en.bitcoin.it/wiki/Script). Here we can see for example that the `OP_FALSE` opcode is represented by the hexadecimal value `0x00` (or just `00`) and the `OP_IF` \
             opcode is represented by the hexadecimal value `0x63` (or just `63`). Let's use this knowledge to find the envelope in the witness data.")
+
+####################################################################################################################################
+### Finding the Envelope                                                                                                         ###
+####################################################################################################################################
+
+st.divider()  # Draws a horizontal rule
 
 st.header("Finding the Envelope")
 
@@ -328,6 +344,11 @@ st.subheader("So where is the wizard now?")
 st.write("So where is the wizard now, you might ask? Well, it is in all these data chunks. If we literally copy all these individual data chunks and concatenate them, we will get the wizard image encoded in hexadecimal format. \
          We are almost done. Let's do a lil magic!")
 
+####################################################################################################################################
+###Wizard, Come Out, Wherever You Are                                                                                            ###
+####################################################################################################################################
+
+st.divider()  # Draws a horizontal rule
 
 st.header("Wizard, Come Out, Wherever You Are")
 st.write("In our example above we only displayed the first two chunks of data that make up our wizard. In the actual transaction the witness data is a lot longer and has many of these data chunks. \
@@ -345,6 +366,7 @@ st.components.v1.iframe("https://codepen.io/abdhass/full/jdRNdj", height=800, sc
 st.caption("This is a hex to image converter. You can copy and paste the text from the text area below into this converter to see the wizard image.")
 st.write("As you can see the image is literally on the blockchain. It is just encoded in a non-human readable format and hidden in the witness data of the transaction. But it is there. And it will be there forever.")
 
+st.divider()  # Draws a horizontal rule
 
 st.header("The Wizard (Inscription)")
 if inscription:
@@ -353,12 +375,17 @@ if inscription:
 st.write("And this my fellow wizards is how Taproot Wizards are literally stored on the Bitcoin blockchain forever. As long as a node is running, the wizard will be there. \
          If that isn't magic, I don't know what is.")
   
+st.divider()  # Draws a horizontal rule
+
 st.header("How To Use This Tool")
 st.write("This application is meant to be an educational tool to help you understand how inscriptions are stored on the Bitcoin blockchain. It uses the doge wizard as an example inscription. However, the tool technically \
          works with all inscriptions as long as they are text, image, video, or audio based. Recursive inscriptions are not yet supported. You can scroll up to the text field for the transaction ID, paste any other \
          transaction ID for an inscription you would like to explore and hit enter. Keep in mind that the application might break due to the different formats of inscriptions. If you encounter problems or just want to leave a like, please \
          hit me up on X ([@you_are_el](https://twitter.com/you_are_el)).")
 st.write("Recursive inscriptions are not yet supported.")
+
+st.divider()  # Draws a horizontal rule
+
 st.header("Acknowledgements")
 st.write("I could have never developed this fun little project without the help of some very smart people. \
          Thanks to all the contributors of the [ord github repo](https://github.com/ordinals/ord) and for writing a stellar documentation. \
