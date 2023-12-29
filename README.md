@@ -13,8 +13,8 @@ This repository offers some python and web based tools for learning about how in
 
 To install and set up the project, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
-2. Navigate to the project directory: `cd your-repo`
+1. Clone the repository: `git clone https://github.com/you-are-el/where-is-my-wizard.git`
+2. Navigate to the project directory: `cd where-is-my-wizard`
 3. Create a virtual environment: `python3 -m venv venv`
 4. Activate the virtual environment:
     - On macOS and Linux: `source venv/bin/activate`
