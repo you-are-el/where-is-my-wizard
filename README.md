@@ -1,4 +1,4 @@
-# Project Name
+# Where Is My Wizard
 
 This repository offers some python and web based tools for learning about how inscriptions are encoded on the Bitcoin blockchain. It consists of multiple individual python scripts that can be run using the instructions below as well as a Streamlit application that can be run locally or at www.whereismywizard.xyz.
 
