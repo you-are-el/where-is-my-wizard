@@ -23,6 +23,7 @@ To install and set up the project, follow these steps:
 
 ## Usage
 
+### Streamlit Application
 To run the Streamlit application locally, follow these steps:
 
 1. Make sure you have completed the installation steps mentioned above.
@@ -32,7 +33,8 @@ To run the Streamlit application locally, follow these steps:
 3. Run the Streamlit app: `streamlit run streamlit_app.py`
 4. Open your web browser and navigate to `http://localhost:8501` to access the application.
 
-You can also run the `ordinals_parser.py` to convert any kind of inscription data into a file and safe it to the project folder. Just replace the transaction ID in the file and run it using `python ordinals_parser.py`. A command line interface is under development. 
+### CLI Inscription Extraction Tool
+You can run `python3 tx_id_to_file.py` to convert any kind of inscription data into a file and safe it to the project folder. The script will prompt you for a transaction id (e.g. `0301e0480b374b32851a9462db29dc19fe830a7f7d7a88b81612b9d42099c0ae`). It supports almost any file type except for recursive inscriptions and some 3D model files.
 
 ## License
 
