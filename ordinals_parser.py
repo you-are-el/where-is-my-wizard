@@ -64,7 +64,6 @@ def find_envelope_and_inscription(hex_string):
     mime_type_end = mime_type_start + mime_type_length
     mime_type_hex = hex_string[mime_type_start:mime_type_end]
     mime_type = bytes.fromhex(mime_type_hex).decode('ascii')
-    print(f"MIME Type: {mime_type}")
 
     # Find and collect inscription data chunks
     data_start = mime_type_end + 2  # Skipping OP_0
@@ -106,12 +105,3 @@ def inscription_data_to_file(mime_type, hex_string, output_file):
     # Save binary data to a file
     with open(output_file_with_extension, 'wb') as file:
         file.write(binary_data)
-
-    print(f"File saved as {output_file_with_extension}")
-
-# Example usage
-witness_data = get_witness_data_from_tx_id('265f9bdb256d8ec23328a80e7b52680fb0fdcc57061856352993939e8bc96898')
-mime_type, inscription = find_envelope_and_inscription(witness_data)
-if inscription:
-    output_file = "inscription_file"  # Base name for the output file
-    inscription_data_to_file(mime_type, inscription, output_file)
