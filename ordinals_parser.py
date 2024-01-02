@@ -1,16 +1,49 @@
 import requests
 import base64
 
-def get_full_transaction_from_tx_id(tx_id):
-    url = f'https://mempool.space/api/tx/{tx_id}'
+def get_block_data_from_tx_id(tx_id):
+    tx = get_full_transaction_from_tx_id(tx_id)
+    block_hash = tx['status']['block_hash']
+    url = f'https://mempool.space/api/block/{block_hash}'
     response = requests.get(url)
-    return response.json()
+    block_data = response.json()
+    return block_data
+
+import requests
+
+def get_full_transaction_from_tx_id(tx_id):
+    # Primary API
+    primary_url = f'https://mempool.space/api/tx/{tx_id}'
+    try:
+        primary_response = requests.get(primary_url)
+        primary_response.raise_for_status()  # Will raise an HTTPError if the response was an HTTP error
+        return primary_response.json()
+    except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+        print("Primary source failed. Attempting to get transaction data from the secondary source.")
+        # Fallback API
+        fallback_url = f'https://blockchain.info/rawtx/{tx_id}'
+        fallback_response = requests.get(fallback_url)
+        fallback_response.raise_for_status()
+        return fallback_response.json()
 
 def get_witness_data_from_tx_id(tx_id):
-    url = f'https://mempool.space/api/tx/{tx_id}'
-    response = requests.get(url)
-    tx_witness = ''.join(response.json()['vin'][0]['witness'])
-    return tx_witness
+    try:
+        # Attempt to get data from the primary source
+        primary_url = f'https://mempool.space/api/tx/{tx_id}'
+        primary_response = requests.get(primary_url)
+        primary_response.raise_for_status()
+        tx_witness = ''.join(primary_response.json()['vin'][0]['witness'])
+        return tx_witness
+    except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+        print("Primary source failed. Attempting to get witness data from the secondary source.")
+        # Fallback to the secondary source
+        fallback_url = f'https://blockchain.info/rawtx/{tx_id}'
+        fallback_response = requests.get(fallback_url)
+        fallback_response.raise_for_status()
+        # Parsing the witness data might need adjustments based on the response structure of blockchain.info
+        # The following line is an example and may need to be adapted
+        tx_witness = ''.join(fallback_response.json()['inputs'][0]['witness'])
+        return tx_witness
 
 def hex_to_bytes(hex_string):
     return bytes.fromhex(hex_string)

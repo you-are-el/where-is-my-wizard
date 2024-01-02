@@ -199,7 +199,7 @@ st.write("We are closing in on the wizard. However, now comes the complicated pa
          then we should be able to find it there somehow. However, there won't be an actual image file in the transaction. Instead, the image data is encoded in the transaction in a non-human readable format. So in order \
          to find the wizard we need to know where to look. We will start by looking at the transaction below and the we will gradually dissect it to find our wizard.")
 
-st.write("We are using the mempool.space API to retrieve the transaction data. You can find the API documentation [here](https://mempool.space/api). If we were running our own Bitcoin node, we could also use the \
+st.write("We are using a public API to retrieve the transaction data. If we were running our own Bitcoin node, we could also use the \
          Remote Procedure Call (RPC) protocol to retrieve the transaction data (we will do this in another demo). Let's load the transaction below by pasting the transaction ID into the text field below.")
 
 tx_id = st.text_input('Transcation ID', 'ef207ae72e81c068142ab6ea03f2549e8c6edb2e96050ae1616b65ce3347d1ed')
@@ -210,11 +210,11 @@ witness_data = ord.get_witness_data_from_tx_id(tx_id)
 
 st.markdown("The following is the full transaction in JSON format. It shows all the different parts of the transaction. It would take too much time to explain all these different parts. Luckily the \
          [Ordinal Theory Handbook](https://docs.ordinals.com/guides/inscriptions.html) tells us that 'inscription content is included in transaction witnesses [...]'. We can find the witness data in \
-         the JSON below by unfolding the JSON, then unfolding the `vin` object (then the `0` object) and then unfolding the `witness` object. I recommend to explore the JSON a bit yourself. Try to find the \
+         the JSON below by unfolding the JSON until we find the `witness` object. I recommend to explore the JSON a bit yourself. Try to find the \
             witness data. Afterwards fold the JSON again to make the rest of the website more readable. Click on the little green arrow below to unfold the JSON.")
 
 st.json(full_txs, expanded=False)
-st.caption('This is the complete transaction in JSON format which we retrieved from the [mempool.space/api](https://mempool.space/api)')
+st.caption('This is the complete transaction in JSON format which we retrieved from the public API')
 
 st.write("For better readability, the witness data is extracted below and displayed in a separate text area. You can check that the witness data is the same as in the JSON above.")
 
