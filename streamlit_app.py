@@ -142,7 +142,7 @@ st.write("Inscriptions inscribe sats with arbitrary content, creating bitcoin-na
          One of the most well known collections of inscriptions on the Bitcoin blockchain is the [Taproot Wizards](https://taprootwizards.com/collection) collection which we will take a closer look at today. \
          Inscriptions, compared to many other NFTs, are stored directly on the blockchain. You will hear people say that an inscription is encoded forever on the blockchain. But what does that mean exactly? \
          In this Streamlit app I want to show you where exactly your wizard is encoded on the blockchain to understand what it means that inscriptions and the Taproot Wizards in particular are forever stored on every \
-         Bitcoin node.")
+         Bitcoin node. You can also check out this [video](https://youtu.be/sl7ERtdCiHw) for an entertaining introduction to this topic.")
 
 st.write("For the sake of simplicity, this demo connects to publicly available APIs to retrieve the inscription data (i.e. a public bitcoin node). However, this process works exactly the same on your own Bitcoin node.")
 
@@ -362,7 +362,7 @@ st.text_area("All the inscription data concatenated. You can paste this data int
 
 st.write("I have loaded a random hex to image converter below. You can copy and paste the text from the text area above into this converter to see the wizard image. You can also search for other hex to image converters \
          on Google.")
-st.components.v1.iframe("https://codepen.io/abdhass/full/jdRNdj", height=800, scrolling=True)
+st.components.v1.iframe("https://codepen.io/you_are_el/full/RwdrebL", height=800, scrolling=True)
 st.caption("This is a hex to image converter. You can copy and paste the text from the text area below into this converter to see the wizard image.")
 st.write("As you can see the image is literally on the blockchain. It is just encoded in a non-human readable format and hidden in the witness data of the transaction. But it is there. And it will be there forever.")
 
