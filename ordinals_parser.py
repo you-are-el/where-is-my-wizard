@@ -1,49 +1,116 @@
 import requests
-import base64
+from bitcoin.rpc import RawProxy
+from node_config import (USE_PUBLIC_API, PUBLIC_API_ENDPOINT, FALLBACK_API_ENDPOINT,
+                    LOCAL_NODE_RPC_URL, LOCAL_NODE_RPC_USER, LOCAL_NODE_RPC_PASSWORD)
 
-def get_block_data_from_tx_id(tx_id):
-    tx = get_full_transaction_from_tx_id(tx_id)
-    block_hash = tx['status']['block_hash']
-    url = f'https://mempool.space/api/block/{block_hash}'
-    response = requests.get(url)
-    block_data = response.json()
-    return block_data
+def get_blockchain_info(timeout_duration=2):
+    if USE_PUBLIC_API:
+        print("Error: This function is only available when using a local node.")
+        return None
+    else:
+        # Use local node
+        service_url = f'http://{LOCAL_NODE_RPC_USER}:{LOCAL_NODE_RPC_PASSWORD}@{LOCAL_NODE_RPC_URL}'
+        p = RawProxy(service_url=service_url)
+        try:
+            blockchain_info = p.getblockchaininfo()
+            return blockchain_info
+        except Exception as e:
+            print(f"Local node RPC error: {e}")
+            return None
 
-import requests
+def get_full_transaction_from_tx_id(tx_id, timeout_duration=2):
+    if USE_PUBLIC_API:
+        # Try primary public API
+        try:
+            primary_url = f"{PUBLIC_API_ENDPOINT}tx/{tx_id}"
+            primary_response = requests.get(primary_url, timeout=timeout_duration)
+            primary_response.raise_for_status()
+            return primary_response.json()
+        except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+            print("Primary public API failed. Attempting fallback public API.")
+            # Try fallback public API
+            try:
+                fallback_url = f"{FALLBACK_API_ENDPOINT}tx/{tx_id}"
+                fallback_response = requests.get(fallback_url, timeout=timeout_duration)
+                fallback_response.raise_for_status()
+                return fallback_response.json()
+            except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+                print("Fallback public API also failed.")
+                return None
+    else:
+        # Use local node
+        service_url = f'http://{LOCAL_NODE_RPC_USER}:{LOCAL_NODE_RPC_PASSWORD}@{LOCAL_NODE_RPC_URL}'
+        p = RawProxy(service_url=service_url)
+        try:
+            raw_tx = p.getrawtransaction(tx_id)
+            decoded_tx = p.decoderawtransaction(raw_tx)
+            return decoded_tx
+        except Exception as e:
+            print(f"Local node RPC error: {e}")
+            return None
 
-def get_full_transaction_from_tx_id(tx_id):
-    # Primary API
-    primary_url = f'https://mempool.space/api/tx/{tx_id}'
-    try:
-        primary_response = requests.get(primary_url)
-        primary_response.raise_for_status()  # Will raise an HTTPError if the response was an HTTP error
-        return primary_response.json()
-    except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
-        print("Primary source failed. Attempting to get transaction data from the secondary source.")
-        # Fallback API
-        fallback_url = f'https://blockchain.info/rawtx/{tx_id}'
-        fallback_response = requests.get(fallback_url)
-        fallback_response.raise_for_status()
-        return fallback_response.json()
+def get_block_data_from_tx_id(tx_id, timeout_duration=2):
+    if USE_PUBLIC_API:
+        try:
+            tx = get_full_transaction_from_tx_id(tx_id, timeout_duration)
+            block_hash = tx['status']['block_hash']
+            primary_url = f'{PUBLIC_API_ENDPOINT}block/{block_hash}'
+            primary_response = requests.get(primary_url, timeout=timeout_duration)
+            primary_response.raise_for_status()
+            return primary_response.json()
+        except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+            print("Primary source failed. Attempting to get block data from the secondary source.")
+            fallback_url = f'{FALLBACK_API_ENDPOINT}block/{block_hash}'
+            fallback_response = requests.get(fallback_url, timeout=timeout_duration)
+            fallback_response.raise_for_status()
+            return fallback_response.json()
+    else:
+        # Use local node
+        service_url = f'http://{LOCAL_NODE_RPC_USER}:{LOCAL_NODE_RPC_PASSWORD}@{LOCAL_NODE_RPC_URL}'
+        p = RawProxy(service_url=service_url)
+        try:
+            # Fetch the block hash using the transaction ID
+            # Note: This might require a different approach depending on how the local node RPC is set up
+            raw_tx = p.getrawtransaction(tx_id, 1)  # 1 for verbose output
+            block_hash = raw_tx.get('blockhash', None)
+            if block_hash:
+                block_data = p.getblock(block_hash)
+                return block_data
+            else:
+                print("Block hash not found in the transaction data.")
+                return None
+        except Exception as e:
+            print(f"Local node RPC error: {e}")
+            return None
 
-def get_witness_data_from_tx_id(tx_id):
-    try:
-        # Attempt to get data from the primary source
-        primary_url = f'https://mempool.space/api/tx/{tx_id}'
-        primary_response = requests.get(primary_url)
-        primary_response.raise_for_status()
-        tx_witness = ''.join(primary_response.json()['vin'][0]['witness'])
-        return tx_witness
-    except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
-        print("Primary source failed. Attempting to get witness data from the secondary source.")
-        # Fallback to the secondary source
-        fallback_url = f'https://blockchain.info/rawtx/{tx_id}'
-        fallback_response = requests.get(fallback_url)
-        fallback_response.raise_for_status()
-        # Parsing the witness data might need adjustments based on the response structure of blockchain.info
-        # The following line is an example and may need to be adapted
-        tx_witness = ''.join(fallback_response.json()['inputs'][0]['witness'])
-        return tx_witness
+def get_witness_data_from_tx_id(tx_id, timeout_duration=2):
+    if USE_PUBLIC_API:
+        try:
+            primary_url = f'{PUBLIC_API_ENDPOINT}tx/{tx_id}'
+            primary_response = requests.get(primary_url, timeout=timeout_duration)
+            primary_response.raise_for_status()
+            tx_witness = ''.join(primary_response.json()['vin'][0]['witness'])
+            return tx_witness
+        except (requests.HTTPError, requests.ConnectionError, requests.Timeout):
+            print("Primary source failed. Attempting to get witness data from the secondary source.")
+            fallback_url = f'{FALLBACK_API_ENDPOINT}tx/{tx_id}'
+            fallback_response = requests.get(fallback_url, timeout=timeout_duration)
+            fallback_response.raise_for_status()
+            # Adjust parsing if needed
+            tx_witness = ''.join(fallback_response.json()['vin'][0]['witness'])
+            return tx_witness
+    else:
+        # Use local node
+        service_url = f'http://{LOCAL_NODE_RPC_USER}:{LOCAL_NODE_RPC_PASSWORD}@{LOCAL_NODE_RPC_URL}'
+        p = RawProxy(service_url=service_url)
+        try:
+            raw_tx = p.getrawtransaction(tx_id, 1)  # 1 for verbose output
+            vin = raw_tx.get('vin', [{}])[0]
+            tx_witness = ''.join(vin.get('txinwitness', []))
+            return tx_witness
+        except Exception as e:
+            print(f"Local node RPC error: {e}")
+            return None
 
 def hex_to_bytes(hex_string):
     return bytes.fromhex(hex_string)
