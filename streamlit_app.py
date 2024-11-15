@@ -179,10 +179,10 @@ st.markdown("Can you spot the the wizard? No? That's ok. Udi also said it is enc
          are all the individual transactions. One of these transaction apparently contains the wizard. We can hover with the mouse over all the different transactions and try to find the one with our wizard in it. \
          Still, by just exploring the block this way, it's hard to find the wizard. Let's instead try to find the transaction that contains the wizard directly. Here as well Udi is giving us a clue. The wizard is \
          hidden in the transaction with the ID **'ef207ae72e81c068142ab6ea03f2549e8c6edb2e96050ae1616b65ce3347d1edi0'**. However, that is not quite correct. The ID Udi provided is actually the inscription ID. We can check \
-         this by visiting [ord.io](https://www.ord.io/) and searching for the ID. You can do this below, just enter the ID into the search bar.")
+         this by visiting [ord.io](https://www.ord.io/) and searching for the ID. Just enter the ID into the search bar.")
 
 #st.components.v1.iframe("https://www.ord.io/", height=800, scrolling=True)
-st.caption("This is the website ord.io. It is an ordinals explorer. Try putting in the Inscription ID from above into the search bar. You can also search for 'Taproot Wizards' to see the full collection.")
+#st.caption("This is the website ord.io. It is an ordinals explorer. Try putting in the Inscription ID from above into the search bar. You can also search for 'Taproot Wizards' to see the full collection.")
 
 st.markdown("Notice how the ID Udi provided in the post, is actually the Inscription ID (the first entry below the image on ord.io). If we scroll down a bit on the page, we can find the actual transaction ID \
          of the 'CREATION TRANSACTION' which is actually really similar to the inscription ID: **'ef207ae72e81c068142ab6ea03f2549e8c6edb2e96050ae1616b65ce3347d1ed'**. It is just missing the two characters 'i0' at the end. \
